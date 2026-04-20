@@ -28,7 +28,7 @@ export function HomeHeroSection() {
             <span className="relative mr-2 flex h-10 w-10 shrink-0 items-center justify-center overflow-visible">
               <Image
                 src="/logo.png"
-                alt="Luma Studio"
+                alt="Studio"
                 width={72}
                 height={72}
                 className="h-10 w-10 max-h-none max-w-none origin-left scale-[1.55] object-cover"
@@ -37,7 +37,7 @@ export function HomeHeroSection() {
             </span>
             <div className="min-w-0">
               <span className="caps-2xs block text-sm font-semibold text-foreground">
-                Luma Studio
+               AI Studio
               </span>
               <span className="caps-xs block truncate text-xs uppercase text-muted-foreground">
                 AI image restyling
