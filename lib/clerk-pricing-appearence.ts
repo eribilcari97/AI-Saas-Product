@@ -1,22 +1,19 @@
 import { dark } from "@clerk/themes";
 
 /**
- * Dark + brand colors for `<PricingTable />` and billing checkout.
- * Uses Clerk’s prebuilt `dark` theme, then overrides variables to match
- * this app’s `.dark` palette (see `app/globals.css`) and orange primary.
- *
+
  * @see https://clerk.com/docs/guides/customizing-clerk/appearance-prop/themes
  * @see https://clerk.com/docs/guides/customizing-clerk/appearance-prop/variables
  */
 export const clerkPricingAppearance = {
   theme: dark,
   variables: {
-    colorPrimary: "oklch(0.7357 0.1641 34.7091)",
-    colorPrimaryForeground: "oklch(1 0 0)",
-    colorBackground: "oklch(0.3184 0.0176 341.4465)",
-    colorForeground: "oklch(0.9397 0.0119 51.3156)",
-    colorInput: "oklch(0.3637 0.0203 342.2664)",
-    colorInputForeground: "oklch(0.9397 0.0119 51.3156)",
-    colorNeutral: "oklch(0.8378 0.0237 52.6346)",
+    colorPrimary: "oklch(0.48 0.18 265)",
+    colorPrimaryForeground: "oklch(0.99 0.01 250)",
+    colorBackground: "oklch(0.22 0.072 272)",
+    colorForeground: "oklch(0.90 0.038 240)",
+    colorInput: "oklch(0.28 0.064 272)",
+    colorInputForeground: "oklch(0.90 0.038 240)",
+    colorNeutral: "oklch(0.58 0.08 258)",
   },
 } as const;

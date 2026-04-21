@@ -98,23 +98,19 @@ export function HomeHeroSection() {
           <div className="home-hero-ctas">
             <Show when="signed-out">
               <SignUpButton mode="modal" fallbackRedirectUrl="/studio">
-                <Button type="button" className="home-btn-hero-primary">
+                <Button type="button" className="home-btn-hero-primary px-8 py-3 text-lg">
                   Get Started Free
                 </Button>
               </SignUpButton>
             </Show>
 
             <Show when="signed-in">
-              <Button asChild className="home-btn-hero-primary">
+              <Button asChild className="home-btn-hero-primary px-8 py-3 text-lg">
                 <Link href="/studio" prefetch={false}>
                   Open Studio
                 </Link>
               </Button>
             </Show>
-
-            <Button asChild variant="ghost" className="hero-pill home-btn-hero-ghost">
-              <a href="#how-it-works">Watch 2min demo</a>
-            </Button>
           </div>
         </div>
 
@@ -124,7 +120,7 @@ export function HomeHeroSection() {
               <div className="hero-demo-glass-inner home-demo-inner">
                 <Image
                   src="/demo.png"
-                  alt="Luma Studio workspace showing upload, curated styles, and a before-and-after preview"
+                  alt="AI Studio workspace showing upload, curated styles, and a before-and-after preview"
                   width={3290}
                   height={1872}
                   className="h-auto w-full"
