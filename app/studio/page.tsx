@@ -30,7 +30,7 @@ async function StudioPage() {
                 alt="AI Studio"
                 width={72}
                 height={72}
-                className="mt-2 mr-2 max-h-none max-w-none origin-left scale-[1.55] object-cover"
+                className="mt-2 mr-2 max-h-none max-w-none origin-left scale-[0.85] object-cover"
                 priority
               />
             </span>

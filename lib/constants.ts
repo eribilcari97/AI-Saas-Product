@@ -25,18 +25,18 @@ export const GALLERY_STATS = [
 ] as const;
 
 export const GALLERY_IMAGES = [
-  { src: "/gallery-1.png", alt: "Stylized rainy character portrait" },
-  { src: "/gallery-2.png", alt: "Stylized family gardening scene" },
-  { src: "/gallery-3.png", alt: "Stylized fantasy mushroom scene" },
-  { src: "/gallery-4.png", alt: "Stylized coffee making scene" },
+  { src: "/gallery-1.jpg", alt: "Stylized rainy character portrait" },
+  { src: "/gallery-2.jpg", alt: "Stylized family gardening scene" },
+  { src: "/gallery-3.jpg", alt: "Stylized fantasy mushroom scene" },
+  { src: "/gallery-4.jpg", alt: "Stylized coffee making scene" },
 ] as const;
 
 
 //hero video--------------------------------
-export const HERO_VIDEO_SRC = "https://ik.imagekit.io/77z6exkmf/hero.mp4";
+export const HERO_VIDEO_SRC = "https://ik.imagekit.io/77z6exkmf/kling_20260422_VIDEO_Image1A_fu_1096_0.mp4";
 //backgroud image-----------------------
 export const SHOWCASE_BG_VIDEO_SRC =
-  "https://ik.imagekit.io/77z6exkmf/hero.mp4";
+  "https://ik.imagekit.io/77z6exkmf/kling_20260422_VIDEO_Image1A_fu_1096_0.mp4";
 
 export const CENTER_NAV_LINKS = [
   { label: "Home", href: "/" },

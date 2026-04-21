@@ -31,7 +31,7 @@ export function HomeHeroSection() {
                 alt="Studio"
                 width={72}
                 height={72}
-                className="h-10 w-10 max-h-none max-w-none origin-left scale-[1.55] object-cover"
+                className="h-10 w-10 max-h-none max-w-none origin-left scale-[1.2] object-cover"
                 priority
               />
             </span>
