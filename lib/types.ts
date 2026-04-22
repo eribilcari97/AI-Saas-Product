@@ -1,5 +1,5 @@
 import type { GenerationQuotaSnapshot } from "@/lib/generation-quota";
-import type { OpenAiImageModel } from "@/lib/openai-image-models";
+import type { HfImageModel } from "@/lib/HfImageModel";
 
 export type GenerationHistorySummaryItem = {
   id: string;
@@ -17,7 +17,7 @@ export type GenerationHistorySummaryItem = {
 export type GenerationResult = {
   imageBase64: string;
   mimeType: string;
-  model: OpenAiImageModel;
+  model: HfImageModel;
   savedGeneration: GenerationHistorySummaryItem;
   style: {
     slug: string;

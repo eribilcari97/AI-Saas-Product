@@ -33,10 +33,10 @@ export const GALLERY_IMAGES = [
 
 
 //hero video--------------------------------
-export const HERO_VIDEO_SRC = "https://ik.imagekit.io/77z6exkmf/kling_20260422_VIDEO_Image1A_fu_1096_0.mp4";
+export const HERO_VIDEO_SRC = "https://ik.imagekit.io/77z6exkmf/202604221612%20(2).mp4";
 //backgroud image-----------------------
 export const SHOWCASE_BG_VIDEO_SRC =
-  "https://ik.imagekit.io/77z6exkmf/kling_20260422_VIDEO_Image1A_fu_1096_0.mp4";
+  "https://ik.imagekit.io/77z6exkmf/202604221612%20(2).mp4";
 
 export const CENTER_NAV_LINKS = [
   { label: "Home", href: "/" },

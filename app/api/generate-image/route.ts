@@ -5,11 +5,10 @@ import { NextResponse } from "next/server";
 import sharp from "sharp";
 
 import * as Sentry from "@sentry/nextjs";
-import { openaiProvider } from "@/lib/openai";
+import { hfProvider } from "@/lib/hfProvider";
 import { ACCEPTED_SOURCE_IMAGE_MIME_TYPES } from "@/lib/constants";
 import { getStylePreset } from "@/lib/style-presets";
 
-import { APICallError, generateImage, NoImageGeneratedError } from "ai";
 import { uploadBufferToImageKit } from "@/lib/imagekit";
 
 export const runtime = "nodejs";
@@ -24,26 +23,26 @@ type GenerateImageRequest = {
   model?: string;
 };
 
-/**
- * inferImageSize reads width and height from the uploaded image (via sharp), computes aspect ratio,
- * and returns one of the allowed `size` values for OpenAI image edits.
- */
 async function inferImageSize(imageBuffer: Buffer): Promise<EditImageSize> {
   try {
     const metadata = await sharp(imageBuffer).metadata();
 
-    if (!metadata.width || !metadata.height) {
-      return "1024x1024";
-    }
+    if (!metadata.width || !metadata.height) return "1024x1024";
 
     const aspectRatio = metadata.width / metadata.height;
 
-    if (aspectRatio > 1.08) return "1536x1024"; // this means that the input image is wider than it is tall
-    if (aspectRatio < 0.92) return "1024x1536"; // this means that the input image is taller than it is wide
-    return "1024x1024"; // this means that the input image is square
+    if (aspectRatio > 1.08) return "1536x1024";
+    if (aspectRatio < 0.92) return "1024x1536";
+    return "1024x1024";
   } catch {
     return "1024x1024";
   }
+}
+
+/** Maps our size string to pixel dimensions for HF */
+function sizeToPixels(size: EditImageSize): { width: number; height: number } {
+  const [w, h] = size.split("x").map(Number);
+  return { width: w, height: h };
 }
 
 export async function POST(request: Request) {
@@ -73,12 +72,11 @@ export async function POST(request: Request) {
     );
   }
 
-  if (!openaiProvider) {
-    return NextResponse.json({ error: "Missing OPENAI_API_KEY." }, { status: 500 });
+  if (!hfProvider) {
+    return NextResponse.json({ error: "Missing Hugging Face API key." }, { status: 500 });
   }
 
   const body = (await request.json()) as GenerateImageRequest;
-
   const { model, originalFileName, sourceImageUrl, sourceMimeType, styleSlug } = body;
 
   if (!sourceImageUrl) {
@@ -115,6 +113,7 @@ export async function POST(request: Request) {
 
   const imageBuffer = Buffer.from(await imageResponse.arrayBuffer());
   const imageSize = await inferImageSize(imageBuffer);
+  const { width, height } = sizeToPixels(imageSize);
 
   const prompt = [
     preset.prompt,
@@ -122,64 +121,44 @@ export async function POST(request: Request) {
   ].join("\n\n");
 
   try {
-    // generateImage =>
+  const resultBlob = await Sentry.startSpan(
+  {
+    name: `image edit ${model}`,
+    op: "gen_ai.request",
+    attributes: {
+      "gen_ai.request.model": model,
+      "gen_ai.operation.name": "request",
+      "gen_ai.request.messages": JSON.stringify([
+        { role: "user", content: prompt },
+        { role: "user", content: "[source image attachment omitted]" },
+      ]),
+    },
+  },
+  async (span) => {
+    const imageBlob = new Blob([imageBuffer], { type: sourceMimeType });
 
-    const result = await Sentry.startSpan(
-      {
-        name: `image edit ${model}`,
-        op: "gen_ai.request",
-        attributes: {
-          "gen_ai.request.model": model,
-          "gen_ai.operation.name": "request",
-          "gen_ai.request.messages": JSON.stringify([
-            { role: "user", content: prompt },
-            { role: "user", content: "[source image attachment omitted]" },
-          ]),
-        },
+    const out = await hfProvider!.imageToImage({
+      model,
+      provider: "fal-ai",   // ← fal-ai has confirmed img2img support
+      inputs: imageBlob,
+      parameters: {
+        prompt,
+        negative_prompt:
+          "extra limbs, extra people, duplicate subjects, blurry, low quality, distorted",
+        strength: 0.75,
+        num_inference_steps: 28,
       },
-      async (span) => {
-        const out = await generateImage({
-          model: openaiProvider!.imageModel(model),
-          prompt: {
-            images: [imageBuffer],
-            text: prompt,
-          },
-          size: imageSize,
-          providerOptions: {
-            openai: {
-              input_fidelity: "high", // this means that the input image is used as a reference for the generation,
-              quality: "medium", // this means that the output image is of medium quality
-              output_format: "png",
-              user: userId,
-            },
-          },
-        });
+    });
 
-        const u = out.usage;
+    span.setAttribute("gen_ai.response.text", "[image generated]");
+    return out;
+  },
+);
 
-        if (u.inputTokens != null) {
-          span.setAttribute("gen_ai.usage.input_tokens", u.inputTokens);
-        }
 
-        if (u.outputTokens != null) {
-          span.setAttribute("gen_ai.usage.output_tokens", u.outputTokens);
-        }
-        if (u.totalTokens != null) {
-          span.setAttribute("gen_ai.usage.total_tokens", u.totalTokens);
-        }
-
-        span.setAttribute(
-          "gen_ai.response.text",
-          JSON.stringify(["[image/png generated; pixel data not sent to Sentry]"]),
-        );
-
-        return out;
-      },
-    );
-
-    const imageBase64 = result.image.base64;
-
-    const resultBuffer = Buffer.from(imageBase64, "base64");
+    // Convert Blob → Buffer → base64
+    const resultBuffer = Buffer.from(await resultBlob.arrayBuffer());
+    const imageBase64 = resultBuffer.toString("base64");
 
     const { url: resultImageUrl } = await uploadBufferToImageKit({
       buffer: resultBuffer,
@@ -216,15 +195,13 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("generate-image route failed", error);
 
-    if (APICallError.isInstance(error)) {
+    // HF SDK throws plain errors with a status field
+    if (error instanceof Error) {
+      const status = (error as Error & { status?: number }).status;
       return NextResponse.json(
         { error: error.message || "Image generation failed. Please try again." },
-        { status: error.statusCode ?? 500 },
+        { status: status ?? 500 },
       );
-    }
-
-    if (NoImageGeneratedError.isInstance(error)) {
-      return NextResponse.json({ error: "The model did not return an image." }, { status: 502 });
     }
 
     return NextResponse.json(

@@ -3,7 +3,7 @@ import { DownloadIcon, XIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
-import { openAiImageModelLabels, type OpenAiImageModel } from "@/lib/openai-image-models";
+import { hfImageModelLabels, type HfImageModel } from "@/lib/HfImageModel";
 import { downloadImageFromUrl, formatHistoryDate } from "@/lib/utils";
 import { GenerationHistorySummaryItem } from "@/lib/types";
 
@@ -55,7 +55,7 @@ export function HistoryPreviewDialog({
             <div className="grid gap-3 rounded-[1.6rem] border border-border/30 bg-background/18 p-5">
               <HistoryMetaRow
                 label="Model"
-                value={openAiImageModelLabels[item.model as OpenAiImageModel] ?? item.model}
+                value={hfImageModelLabels[item.model as HfImageModel] ?? item.model}
               />
               <HistoryMetaRow label="Generated" value={formatHistoryDate(item.createdAt)} />
               <HistoryMetaRow label="Style" value={item.styleLabel} />

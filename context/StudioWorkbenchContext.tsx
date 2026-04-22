@@ -12,7 +12,7 @@ import { upload } from "@imagekit/next";
 import * as Sentry from "@sentry/nextjs";
 
 import type { GenerationQuotaSnapshot } from "@/lib/generation-quota";
-import { openAiImageModels, type OpenAiImageModel } from "@/lib/openai-image-models";
+import { hfImageModels, type HfImageModel } from "@/lib/HfImageModel";
 import { stylePresets, type StylePreset } from "@/lib/style-presets";
 import {
   GenerationHistorySummaryItem,
@@ -30,7 +30,7 @@ type StudioWorkbenchContextValue = {
   isLoading: boolean;
   quota: GenerationQuotaSnapshot;
   resultPreview: string | null;
-  selectedModel: OpenAiImageModel;
+  selectedModel: HfImageModel;
   selectedPreset: StylePreset;
   selectedStyle: string;
   sourcePreview: string | null;
@@ -39,7 +39,7 @@ type StudioWorkbenchContextValue = {
   handleSubmit: (event: SubmitEvent<HTMLFormElement>) => Promise<void>;
   openHistoryPreview: (item: GenerationHistorySummaryItem) => void;
   replaceFile: (nextFile: File | null) => void;
-  selectModel: (model: OpenAiImageModel) => void;
+  selectModel: (model: HfImageModel) => void;
   selectStyle: (styleSlug: string) => void;
 };
 
@@ -93,7 +93,7 @@ function useStudioWorkbenchValue({
   initialQuota,
 }: StudioWorkbenchProps): StudioWorkbenchContextValue {
   const [selectedStyle, setSelectedStyle] = useState(stylePresets[0]?.slug ?? "");
-  const [selectedModel, setSelectedModel] = useState<OpenAiImageModel>(openAiImageModels[0]);
+  const [selectedModel, setSelectedModel] = useState<HfImageModel>(hfImageModels[0]);
   const [file, setFile] = useState<File | null>(null);
   const [uploadedSource, setUploadedSource] = useState<UploadedSource | null>(null);
   const [sourcePreview, setSourcePreview] = useState<string | null>(null);
