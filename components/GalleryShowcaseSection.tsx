@@ -11,7 +11,7 @@ export function GalleryShowcaseSection() {
   return (
     <section
       id="styles"
-      className="section-shell relative mt-6 overflow-hidden px-5 py-14 sm:px-8 sm:py-18 lg:px-12 lg:py-20"
+      className="section-shell relative mt-6 overflow-hidden px-5 py-14 sm:px-8 sm:py-18 lg:px-12 lg:py-20 hidden lg:block"
     >
       <video
         className="hero-video pointer-events-none absolute inset-0 z-0 h-full w-full object-cover object-center"
