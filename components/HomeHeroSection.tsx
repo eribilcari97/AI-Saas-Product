@@ -40,7 +40,7 @@ export function HomeHeroSection() {
                AI Studio
               </span>
               <span className="caps-xs block truncate text-xs uppercase text-muted-foreground">
-                AI image restyling
+                Restyling
               </span>
             </div>
           </Link>
