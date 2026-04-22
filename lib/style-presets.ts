@@ -12,7 +12,7 @@ export const stylePresets: StylePreset[] = [
     slug: "storybook-3d",
     label: "Storybook 3D",
     description: "Soft cinematic lighting with polished 3D storybook detail.",
-    thumbnailPath: "/storybook-example.png",
+    thumbnailPath: "/storybook-example.jpg",
     thumbnailAlt: "Storybook 3D preset example",
     prompt:
       "Transform the uploaded image into a premium storybook-inspired 3D illustration. Preserve the original subject identity, pose, framing, major objects, and scene relationships. Add soft depth, warm cinematic lighting, tactile materials, and a polished animated-film finish.",

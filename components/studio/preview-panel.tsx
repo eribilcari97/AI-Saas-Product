@@ -33,7 +33,7 @@ export function StudioPreviewPanel() {
                 />
               ) : (
                 <Image
-                  src="/original.png"
+                  src="/original.jpg"
                   alt="Original example preview"
                   fill
                   className="object-cover"

@@ -39,7 +39,7 @@ async function inferImageSize(imageBuffer: Buffer): Promise<EditImageSize> {
   }
 }
 
-/** Maps our size string to pixel dimensions for HF */
+/** Maps size string to pixel dimensions for HF */
 function sizeToPixels(size: EditImageSize): { width: number; height: number } {
   const [w, h] = size.split("x").map(Number);
   return { width: w, height: h };
